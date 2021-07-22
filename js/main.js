@@ -62,7 +62,7 @@ const createHeader=({title, header: {logo, menu, social}})=>{							// Созд�
 				textContent: item.title,			
 			});
 			if (item.title.toLowerCase()=='трейлер') {
-				menuLink.classList.add('youtube-modal');
+				menuLink.setAttribute('data-fancybox','');
 			}
 			return menuLink;
 		})
@@ -135,18 +135,21 @@ const createMain = ({title, main: {genre, rating, description, trailer}}) => {  
 
 	if (trailer) {													//Создание кнопок трейлера
 		const youtubeLink = getElement('a',
-			['button', 'animated', 'fadeInRight', 'youtube-modal'],
+			['button', 'animated', 'fadeInRight'],
 			{
 				href: trailer,
 				textContent: 'Смотреть трейлер',
 			});
+		youtubeLink.setAttribute('data-fancybox','');
 			
 		const youtubeImgLink = getElement('a',
-			['play', 'youtube-modal'],
+			'play',
 			{
 				href: trailer,
 				ariaLabel: 'Смотреть трейлер',
 			});
+		youtubeImgLink.setAttribute('data-fancybox','');
+		
 		const iconPlay = getElement('img',
 			'play-img',
 			{
