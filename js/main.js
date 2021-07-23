@@ -40,21 +40,15 @@ const createHeader=({title, header: {logo, menu, social}})=>{							// Созд�
 	const header=getElement('header');
 	const container = getElement('div','container');
 	const wrapper = getElement('div','header');
-	const menuButton = getElement('button','menu-button');
 	
-	menuButton.addEventListener('click', function () {
-		menuButton.classList.toggle('menu-button-active');
-		wrapper.classList.toggle('header-active');
-	})
-
-	if (logo) { 							//Создание логотипа
+	if (logo) { 											//Создание логотипа
 		const logotip = getElement('img', 'logo', {
 			src: logo,
 			alt: 'Логотип ' + title});
 		wrapper.append(logotip);
 	}
 
-	if (menu) {								//Создание меню
+	if (menu) {												//Создание меню
 		const nav_menu = getElement('nav', 'menu-list');
 		const allMenuLink = menu.map(item=>{
 			const menuLink = getElement('a','menu-link', {
@@ -66,11 +60,12 @@ const createHeader=({title, header: {logo, menu, social}})=>{							// Созд�
 			}
 			return menuLink;
 		})
+
 		nav_menu.append(...allMenuLink);
 		wrapper.append(nav_menu);
 	}
 
-	if (social) {									//Создание ссылок на соц сети
+	if (social) {											//Создание ссылок на соц сети
 		const socialWrapper = getElement('div','social');
 		const allSocial = social.map(item => {
 			const socialLink = getElement('a', 'social-link');
@@ -84,16 +79,22 @@ const createHeader=({title, header: {logo, menu, social}})=>{							// Созд�
 		wrapper.append(socialWrapper);
 	};
 
-
-
 	header.append(container);
 	container.append(wrapper);
-	container.append(menuButton);
+
+	if (menu) {
+		const menuButton = getElement('button','menu-button');
+		menuButton.addEventListener('click', function () {
+			menuButton.classList.toggle('menu-button-active');
+			wrapper.classList.toggle('header-active');
+		});
+		container.append(menuButton);
+	}
+
 	return header;
 };
 
 const createMain = ({title, main: {genre, rating, description, trailer}}) => {      //Создание блока Мэйн
-	
 	const main = getElement('main');
 	const container = getElement('div','container');
 	main.append(container);
@@ -173,16 +174,21 @@ const movieConstructor = (selector, options)=> {  				//Конечная фун�
 	app.style.backgroundImage = options.background ? 
 		`url("${options.background}")` : '';
 	document.title=options.title + ' - официальный сайт';
-	document.head.append(getElement('link',
-		'',
-		{
-			rel: 'icon',
-			type: 'image/png',
-			href: options.header.logo,
-		}));
+	if (options.favicon) {
+		const type = options.favicon.slice(-3);
+		document.head.append(getElement('link',
+			'',
+			{
+				rel: 'icon',
+				type: type === 'svg' ? 'svg-xml' : 'image/png',
+				href: options.favicon,
+			}));
+	}
+
 	if (options.header) {
 		app.append(createHeader(options));
 	}
+
 	if (options.main) {
 		app.append(createMain(options));
 	}
@@ -191,6 +197,7 @@ const movieConstructor = (selector, options)=> {  				//Конечная фун�
 movieConstructor('.app', {
 	title: 'Ведьмак',
 	background: 'witcher/background.jpg',
+	favicon: 'witcher/logo.png',
 	header: {
 		logo: 'witcher/logo.png',
 		social: [
