@@ -36,7 +36,8 @@ const createHeader=({title, header: {logo, menu, social}})=>{
 		const allMenuLink = menu.map(item=>{
 			const menuLink = getElement('a','menu-link', {
 				href: item.link,
-				textContent: item.title,			
+				textContent: item.title,	
+				target: '_blank',		
 			});
 			if (item.title.toLowerCase()=='трейлер') {
 				menuLink.setAttribute('data-fancybox','');
@@ -58,11 +59,13 @@ const createHeader=({title, header: {logo, menu, social}})=>{
 	if (social) {																										//Создание ссылок на соц сети
 		const socialWrapper = getElement('div','social');
 		const allSocial = social.map(item => {
-			const socialLink = getElement('a', 'social-link');
+			const socialLink = getElement('a', 'social-link', {
+				href: item.link,
+				target: '_blank',
+			});
 			socialLink.append(getElement('img',"",{
 				src: item.image,
 				alt: item.title}));
-			socialLink.href = item.link;
 			return socialLink;
 		})
 		socialWrapper.append(...allSocial);
@@ -158,7 +161,23 @@ const createMain = ({title, main: {genre, rating, description, trailer, slider}}
 					src: item.img,
 					alt: item.subtitle ? item.subtitle : '',
 				});
-			card.append(cardImg);	
+			const linkImg = getElement('a','link-img',
+				{
+					href: item.img,
+				});
+			linkImg.setAttribute('data-fancybox','');
+			if (item.title && item.subtitle) {
+				linkImg.setAttribute('data-caption', item.subtitle + ' - ' + item.title);
+			} else if (item.title) {
+				linkImg.setAttribute('data-caption', item.title);
+			} else if (item.subtitle) {
+				linkImg.setAttribute('data-caption', item.subtitle);
+			}
+			
+			if (item.link) linkImg.href = item.link;		
+
+			card.append(linkImg, cardImg);
+							
 			if (item.title || item.subtitle) {
 				const cardDescription = getElement('figcaption', 'card-description');
 				cardDescription.innerHTML=`
@@ -188,7 +207,7 @@ const createMain = ({title, main: {genre, rating, description, trailer, slider}}
 					spaceBetween: 20
 				},
 				541: {
-					slidesPerView: 2,
+					slidesPerView: 3,
 					spaceBetween: 40
 				}
 			}
@@ -197,6 +216,43 @@ const createMain = ({title, main: {genre, rating, description, trailer, slider}}
 
 	return main;
 };
+
+//-------------------------------Создание футера
+const createFooter = ({backgroundColor, footer: {copyright, footerMenu}}) => {
+	const footer = getElement('footer', 'footer');
+	const container = getElement('div', 'container');
+	const footerContent = getElement('div', 'footer-content');
+	const left = getElement('div', 'left');
+	const right = getElement('div', 'right');
+
+	if (copyright) {
+		left.append(getElement('span', 'copyright',
+		{
+			textContent: copyright,
+		}));
+	}
+
+	if (footerMenu) {
+		const footerMenuBlock = getElement('nav','footer-menu');
+		const allFooterLink = footerMenu.map(item => {
+			const footerLink = getElement('a', 'footer-link',
+			{
+				href: item.link,
+				textContent: item.title
+			});
+			return footerLink;
+		});
+		footerMenuBlock.append(...allFooterLink);
+		right.append(footerMenuBlock);
+	}
+
+	footerContent.append(left, right);
+	container.append(footerContent);
+	footer.append(container);
+	footer.style.backgroundColor = backgroundColor;
+	return footer;
+}
+
 //--------------------------Конечная функция создания сайта
 const movieConstructor = (selector, options)=> {  				
 	const app = document.querySelector(selector);
@@ -227,80 +283,13 @@ const movieConstructor = (selector, options)=> {
 	if (options.main) {
 		app.append(createMain(options));
 	}
-};
 
-movieConstructor('body', {
-	title: 'Ведьмак',
-	background: 'witcher/background.jpg',
-	favicon: 'witcher/logo.png',
-	fontColor: '#fff',
-	backgroundColor: '#141218',
-	subColor: '#9D2929',
-	header: {
-		logo: 'witcher/logo.png',
-		social: [
-			{
-				title:'Twitter',
-				link:'https://twitter.com',
-				image:'witcher/social/twitter.svg',
-			},
-			{
-				title:'Instagram',
-				link:'https://instagram.com',
-				image:'witcher/social/instagram.svg',
-			},
-			{
-				title:'Facebook',
-				link:'https://facebook.com',
-				image:'witcher/social/facebook.svg',
-			}
-		],
-		menu: [
-			{
-				title:'Описание',
-				link:'#',
-		},
-			{
-				title:'Трейлер',
-				link:'https://www.youtube.com/watch?v=P0oJqfLzZzQ',
-		},
-			{
-				title:'Отзывы',
-				link:'#',
-		},
-		]
-	},
-	main: {
-		genre: '2019, фэнтези',
-		rating: '7',
-		description: 'Ведьмак Геральт, мутант и убийца чудовищ, на своей верной лошади по кличке Плотва путешествует по Континенту. За тугой мешочек чеканных монет этот мужчина избавит вас от всякой настырной нечисти — хоть от чудищ болотных, оборотней и даже	заколдованных принцесс.',
-		trailer: 'https://www.youtube.com/watch?v=P0oJqfLzZzQ',
-		slider: [
-			{
-				img: 'witcher/series/series-1.jpg',
-				title: 'Начало конца',
-				subtitle: 'Серия №1'
-			},
-			{
-				img: 'witcher/series/series-2.jpg',
-				title: 'Четыре марки',
-				subtitle: 'Серия №2'
-			},
-			{
-				img: 'witcher/series/series-3.jpg',
-				title: 'Предательская луна',
-				subtitle: 'Серия №3'
-			},
-			{
-				img: 'witcher/series/series-4.jpg',
-				title: 'Банкеты, ублюдки и похороны',
-				subtitle: 'Серия №4'
-			}
-		]
+	if (options.footer) {
+		app.append(createFooter(options));
 	}
-});
+};
 
 /*fetch('./site.json')
 .then(response => response.json())
-.then(site => movieConstructor('.app', site));
+.then(site => movieConstructor('body', site));
 */
