@@ -226,7 +226,7 @@ body {
 }
 
 .arrow {
-    width: 32px;
+    width: 40px;
     height: 23px;
     border: none;
     background-image: url('../img/arrow.svg');
@@ -235,7 +235,7 @@ body {
     background-color: transparent;
     position: absolute;
     top: 50%;
-    right: -35px;
+    right: -55px;
 }
 
 .swiper-container {
