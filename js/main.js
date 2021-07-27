@@ -87,12 +87,12 @@ const createMain = ({title, main: {genre, rating, description, trailer, slider}}
 	mainContent.append(content);
 
 	if (genre) {																							//Создание жанра
-		const genreSpan = getElement('span', ['genre', 'animated', 'fadeInRight'], {textContent: genre});
+		const genreSpan = getElement('span', ['genre', 'animate__animated', 'animate__fadeInRightBig'], {textContent: genre});
 		content.append(genreSpan);
 	}
 
 	if (rating) {																							//Создание рейтинга
-		const ratingBlock = getElement('div',['rating', 'animated', 'fadeInRight']);
+		const ratingBlock = getElement('div',['rating', 'animate__animated', 'animate__fadeInRightBig']);
 		const ratingStars = getElement('div', 'rating-stars');
 		const ratingNumber = getElement('div', 'rating-number', {textContent: `${rating}/10`});
 
@@ -108,18 +108,18 @@ const createMain = ({title, main: {genre, rating, description, trailer, slider}}
 		content.append(ratingBlock);
 	}
 	content.append(getElement('h1',
-		['main-title', 'animated', 'fadeInRight'],
+		['main-title', 'animate__animated', 'animate__fadeInRightBig'],
 		{textContent: title}));
 
 	if (description) {												//Создание описания
 		content.append(getElement('p',
-			['main-description', 'animated', 'fadeInRight'],
+			['main-description', 'animate__animated', 'animate__fadeInRightBig'],
 			{textContent: description}));
 	}
 
 	if (trailer) {													//Создание кнопок трейлера
 		const youtubeLink = getElement('a',
-			['button', 'animated', 'fadeInRight'],
+			['button', 'animate__animated', 'animate__fadeInRightBig'],
 			{
 				href: trailer,
 				textContent: 'Смотреть трейлер',
